@@ -14,6 +14,7 @@ import ExecutionHistory from "./ExecutionHistory";
 import ProjectManager from "./ProjectManager";
 import TokenStatsPanel from "./TokenStatsPanel";
 import PerformanceMonitor from "./PerformanceMonitor";
+import AgentTemplates from "./AgentTemplates";
 
 export default function AgentHub() {
   const { agents, ready, init, persistAgents, addAgent } = useAgents();
@@ -257,7 +258,7 @@ export default function AgentHub() {
               </button>
             ))}
           </div>
-          {subTab === "templates" && <TemplatesPanel templates={[]} onSelect={handleTemplateSelect} />}
+          {subTab === "templates" && <AgentTemplates agents={agents} persistAgents={persistAgents} />}
           {subTab === "history" && <ExecutionHistory onSelect={(entry) => { setTask(entry.task); }} />}
           {subTab === "io" && <ImportExport agents={agents} versions={versions} onImport={handleImport} />}
         </div>
