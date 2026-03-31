@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAgents, useVersions, usePipeline } from "../hooks";
 import useKeyboardShortcuts, { getShortcutsHelp } from "../hooks/useKeyboardShortcuts";
 import { useTheme } from "../hooks/useTheme";
+import useSwipe from "../hooks/useSwipe";
 import { DEFAULT_CONFIG } from "../services/api";
 import { DEFAULT_TEMPLATES } from "../services/templates";
 import Pipeline from "./Pipeline";
@@ -124,10 +125,21 @@ export default function AgentHub() {
 
   useKeyboardShortcuts(handlers());
 
+  const tabs = ["run", "config", "projects", "api", "tools"];
+  const handleSwipeLeft = useCallback(() => {
+    const idx = tabs.indexOf(tab);
+    if (idx < tabs.length - 1) setTab(tabs[idx + 1]);
+  }, [tab]);
+  const handleSwipeRight = useCallback(() => {
+    const idx = tabs.indexOf(tab);
+    if (idx > 0) setTab(tabs[idx - 1]);
+  }, [tab]);
+  const swipeProps = useSwipe(handleSwipeLeft, handleSwipeRight);
+
   if (!ready) return <div style={{ padding: "2rem", textAlign: "center", color: "var(--color-text-tertiary)", fontSize: "13px" }}>初始化中...</div>;
 
   return (
-    <div style={{ fontFamily: "var(--font-sans)", padding: "1rem" }}>
+    <div style={{ fontFamily: "var(--font-sans)", padding: "1rem" }} {...swipeProps}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
