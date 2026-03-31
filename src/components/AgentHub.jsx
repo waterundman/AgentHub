@@ -15,6 +15,8 @@ import ProjectManager from "./ProjectManager";
 import TokenStatsPanel from "./TokenStatsPanel";
 import PerformanceMonitor from "./PerformanceMonitor";
 import AgentTemplates from "./AgentTemplates";
+import AgentPerfComparison from "./AgentPerfComparison";
+import { useExport } from "../utils/export";
 
 export default function AgentHub() {
   const { agents, ready, init, persistAgents, addAgent } = useAgents();
@@ -31,6 +33,7 @@ export default function AgentHub() {
   const [subTab, setSubTab] = useState("templates");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const { theme, toggleTheme, isDark } = useTheme();
+  const { exportMarkdown, exportJSON } = useExport();
 
   useEffect(() => {
     (async () => {
@@ -173,6 +176,12 @@ export default function AgentHub() {
                 </button>
               )}
               {logs.length > 0 && !running && <button onClick={clearLogs} style={{ padding: "7px 14px", fontSize: "12px", background: "transparent", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", cursor: "pointer", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}>清空</button>}
+              {logs.length > 0 && !running && tokenStats && (
+                <>
+                  <button onClick={() => exportMarkdown(logs, finalOutput, task)} style={{ padding: "7px 14px", fontSize: "12px", background: "transparent", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", cursor: "pointer", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}>导出 MD</button>
+                  <button onClick={() => exportJSON(logs, finalOutput, task, tokenStats)} style={{ padding: "7px 14px", fontSize: "12px", background: "transparent", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", cursor: "pointer", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}>导出 JSON</button>
+                </>
+              )}
               {running && <div style={{ flex: 1, height: "3px", background: "var(--color-border-tertiary)", borderRadius: "2px", overflow: "hidden" }}><div style={{ height: "100%", background: "#1D9E75", width: `${(doneCount / agents.length) * 100}%`, transition: "width 0.6s ease", borderRadius: "2px" }} /></div>}
             </div>
           </div>
@@ -252,14 +261,15 @@ export default function AgentHub() {
       {tab === "tools" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           <div style={{ display: "flex", background: "var(--color-background-secondary)", borderRadius: "8px", padding: "3px", gap: "2px", width: "fit-content" }}>
-            {["templates", "history", "io"].map(t => (
+            {["templates", "history", "perf", "io"].map(t => (
               <button key={t} onClick={() => setSubTab(t)} style={{ padding: "4px 14px", fontSize: "12px", cursor: "pointer", background: subTab === t ? "var(--color-background-primary)" : "transparent", color: subTab === t ? "var(--color-text-primary)" : "var(--color-text-secondary)", border: subTab === t ? "0.5px solid var(--color-border-secondary)" : "none", borderRadius: "6px", fontFamily: "var(--font-sans)" }}>
-                {t === "templates" ? "模板" : t === "history" ? "历史" : "导入导出"}
+                {t === "templates" ? "模板" : t === "history" ? "历史" : t === "perf" ? "性能" : "导入导出"}
               </button>
             ))}
           </div>
           {subTab === "templates" && <AgentTemplates agents={agents} persistAgents={persistAgents} />}
           {subTab === "history" && <ExecutionHistory onSelect={(entry) => { setTask(entry.task); }} />}
+          {subTab === "perf" && <AgentPerfComparison />}
           {subTab === "io" && <ImportExport agents={agents} versions={versions} onImport={handleImport} />}
         </div>
       )}
