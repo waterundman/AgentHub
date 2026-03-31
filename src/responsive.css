@@ -1,0 +1,111 @@
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tabBar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .taskTextarea {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .taskActions {
+    flex-wrap: wrap;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .outputGridTwo {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pipeline {
+    overflow-x: auto;
+    padding: 10px !important;
+  }
+
+  .pipelineNode {
+    min-width: 70px !important;
+    padding: 8px 10px !important;
+  }
+
+  .configGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .projectGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tokenStatsGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .logPanel {
+    height: 250px !important;
+  }
+
+  .outputPanel {
+    height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerTitle {
+    font-size: 14px;
+  }
+
+  .headerSubtitle {
+    font-size: 10px;
+  }
+
+  .tab {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+
+  .taskTextarea {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .pipelineNode {
+    min-width: 60px !important;
+    padding: 6px 8px !important;
+  }
+
+  .pipelineIcon {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 10px !important;
+  }
+
+  .pipelineName {
+    font-size: 10px !important;
+  }
+
+  .tokenStatsGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
