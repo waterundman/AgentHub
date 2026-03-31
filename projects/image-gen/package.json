@@ -1,0 +1,17 @@
+{
+  "name": "agenthub-image-gen",
+  "version": "1.0.0",
+  "description": "AI 图像生成 Agent - 通义万相 API",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "generate": "node src/image_gen.js generate",
+    "gen": "node src/image_gen.js generate"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": ["image", "generation", "ai", "dashscope"],
+  "license": "MIT"
+}

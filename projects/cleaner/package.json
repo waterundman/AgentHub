@@ -1,0 +1,14 @@
+{
+  "name": "agenthub-cleaner",
+  "version": "1.0.0",
+  "description": "磁盘清理 Agent - 自动扫描并清理系统垃圾文件",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "clean": "python src/clean_disk.py",
+    "clean:dry": "python src/clean_disk.py --dry-run",
+    "status": "python src/clean_disk.py --status"
+  },
+  "keywords": ["cleaner", "disk", "cache"],
+  "license": "MIT"
+}
