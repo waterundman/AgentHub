@@ -13,6 +13,7 @@ import ImportExport from "./ImportExport";
 import ExecutionHistory from "./ExecutionHistory";
 import ProjectManager from "./ProjectManager";
 import TokenStatsPanel from "./TokenStatsPanel";
+import PerformanceMonitor from "./PerformanceMonitor";
 
 export default function AgentHub() {
   const { agents, ready, init, persistAgents, addAgent } = useAgents();
@@ -287,6 +288,7 @@ export default function AgentHub() {
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes tooltipFadeIn { from { opacity: 0; transform: translate(-50%, 4px); } to { opacity: 1; transform: translate(-50%, 0); } }
       `}</style>
+      <PerformanceMonitor />
     </div>
   );
 }
