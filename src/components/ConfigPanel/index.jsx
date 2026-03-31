@@ -5,6 +5,7 @@ import { computeDiff, countChanges } from "../../utils/diff";
 import { fmtTs } from "../../services/storage";
 import HashBadge from "../HashBadge";
 import DiffView from "../DiffView";
+import MonacoDiff from "../MonacoDiff";
 import Tooltip from "../Tooltip";
 
 export default function ConfigPanel({

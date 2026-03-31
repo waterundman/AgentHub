@@ -1,6 +1,6 @@
 {
   "name": "agenthub",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "轻量多 Agent 协作平台 - Git 式版本管理 AI Agent",
   "type": "module",
   "main": "src/index.js",
@@ -13,8 +13,11 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "monaco-editor": "^0.45.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
