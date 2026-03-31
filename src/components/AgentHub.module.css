@@ -1,0 +1,198 @@
+.container {
+  font-family: var(--font-sans);
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--color-background-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.headerTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.headerSubtitle {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.tabBar {
+  display: flex;
+  background: var(--color-background-secondary);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.tab {
+  padding: 4px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  transition: all 0.15s ease;
+}
+
+.tabActive {
+  composes: tab;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border: 0.5px solid var(--color-border-secondary);
+}
+
+.taskArea {
+  margin-bottom: 1rem;
+}
+
+.taskTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+.taskActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.primaryBtn {
+  padding: 7px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: opacity 0.15s ease;
+}
+
+.primaryBtnEnabled {
+  composes: primaryBtn;
+  background: var(--color-text-primary);
+  color: var(--color-background-primary);
+}
+
+.primaryBtnDisabled {
+  composes: primaryBtn;
+  background: var(--color-background-secondary);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  padding: 7px 14px;
+  font-size: 12px;
+  background: transparent;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+}
+
+.progressBar {
+  flex: 1;
+  height: 3px;
+  background: var(--color-border-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #1D9E75;
+  transition: width 0.6s ease;
+  border-radius: 2px;
+}
+
+.outputGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.outputGridTwo {
+  composes: outputGrid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.outputGridOne {
+  composes: outputGrid;
+  grid-template-columns: 1fr;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.outputPanel {
+  height: 320px;
+  overflow-y: auto;
+  background: var(--color-background-primary);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border-info);
+  padding: 14px;
+}
+
+.outputText {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@keyframes scanbar {
+  0% { left: -45%; }
+  100% { left: 110%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translate(-50%, 4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

@@ -368,32 +368,41 @@ const changes = diffLines(oldPrompt, newPrompt);
 
 ---
 
-## 七、立即可执行的优先任务
+## 七、迭代状态更新 (2026-04-01)
 
-### Week 1 冲刺清单
+### ✅ Phase 1-3 全部完成
 
-1. **拆分文件** (4h)
-   - 提取子组件到独立文件
-   - 创建 hooks 目录
+| 类别 | 状态 | 说明 |
+|------|------|------|
+| 代码重构 | ✅ | 120 文件，模块化架构 |
+| API 层抽象 | ✅ | Anthropic + OpenAI |
+| 存储适配 | ✅ | localStorage 回退 |
+| 错误处理 | ✅ | 指数退避重试 |
+| 测试覆盖 | ✅ | 4 个测试文件 (unit + e2e) |
+| DAG 流水线 | ✅ | 可视化依赖配置 |
+| 真实 SSE | ✅ | streamCallAgent |
+| 导入/导出 | ✅ | JSON 格式 |
+| 任务模板 | ✅ | 预设 + 自定义 |
+| 执行历史 | ✅ | 自动记录 + 搜索 |
+| Token 统计 | ✅ | 成本计算 + 速率 |
+| 键盘快捷键 | ✅ | 全局 + 帮助弹窗 |
+| 暗色/亮色 | ✅ | 持久化主题 |
+| 悬停 Tooltip | ✅ | 系统提示词预览 |
+| 虚拟滚动 | ✅ | 日志面板 |
+| 骨架屏 | ✅ | Loading 状态 |
+| 搜索过滤 | ✅ | ConfigPanel + ProjectManager |
+| 项目集成 | ✅ | 3 个 Agent 完整迁移 |
+| JSDoc 类型 | ✅ | types.js |
+| Zustand 状态 | ✅ | useStore.js |
+| i18n | ✅ | zh-CN + en-US |
+| CSS Modules | ✅ | AgentHub.module.css |
 
-2. **API 配置界面** (6h)
-   - 添加 API Key 输入框
-   - 支持模型选择下拉
-   - 测试连接按钮
+### 🔄 下一步 (Phase 4)
 
-3. **错误处理增强** (4h)
-   - 添加重试逻辑
-   - 友好的错误提示
-   - 网络断开检测
-
-4. **存储层适配** (2h)
-   - 实现 localStorage 回退
-   - 添加错误边界
-
-5. **基础测试** (4h)
-   - hash 函数单元测试
-   - diff 函数单元测试
-   - 存储层集成测试
+1. **Monaco Editor Diff 视图** - 替代当前简陋 diff
+2. **云端同步** - 团队共享配置
+3. **插件系统** - 扩展 Agent 能力
+4. **TypeScript 完全迁移** - 替代 JSDoc
 
 ---
 
