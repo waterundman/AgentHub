@@ -5,6 +5,8 @@ import { useTheme } from "../hooks/useTheme";
 import useSwipe from "../hooks/useSwipe";
 import { DEFAULT_CONFIG } from "../services/api";
 import { DEFAULT_TEMPLATES } from "../services/templates";
+import { setPluginManager } from "../services/agentRunner";
+import { initializePlugins, getPluginManager } from "../services/pluginInit";
 import Pipeline from "./Pipeline";
 import LogPanel from "./LogPanel";
 import ConfigPanel from "./ConfigPanel";
@@ -43,6 +45,15 @@ export default function AgentHub() {
     (async () => {
       const vers = await init();
       setSavedVers(vers);
+      
+      // 初始化插件系统
+      try {
+        await initializePlugins();
+        const manager = getPluginManager();
+        setPluginManager(manager);
+      } catch (error) {
+        console.error('[AgentHub] Plugin system initialization failed:', error);
+      }
     })();
   }, [init]);
 
