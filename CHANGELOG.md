@@ -10,6 +10,11 @@
   - PluginHooks: 完整的钩子系统（支持流水线、Agent、Provider等扩展点）
   - 插件工厂函数：createAgentPlugin, createProviderPlugin, createToolPlugin, createStoragePlugin
   - 五种插件类型：Agent / Provider / Tool / Storage / UI
+- **Electron 桌面应用支持**
+  - 跨平台桌面应用打包 (Windows/macOS/Linux)
+  - Electron 主进程和渲染进程通信
+  - 应用菜单和系统托盘集成
+  - 本地文件系统访问能力
 - 全局通知系统
 - 大型 Agent 运行前的确认对话框
 - 执行队列管理集成到运行标签页
