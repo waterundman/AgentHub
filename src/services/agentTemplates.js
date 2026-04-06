@@ -1,4 +1,4 @@
-import { agentHash } from "../../utils/hash";
+import { agentHash } from "../utils/hash";
 
 const STORAGE_TEMPLATES = "agenthub_agent_templates_v1";
 

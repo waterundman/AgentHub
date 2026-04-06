@@ -4,7 +4,6 @@ import { shortHash } from "../../utils/hash";
 import { computeDiff, countChanges } from "../../utils/diff";
 import { fmtTs } from "../../services/storage";
 import HashBadge from "../HashBadge";
-import DiffView from "../DiffView";
 import MonacoDiff from "../MonacoDiff";
 import Tooltip from "../Tooltip";
 
@@ -196,7 +195,7 @@ export default function ConfigPanel({
                                   {!isLatest && <button onClick={() => onRevert(agent.hash, v)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid #BA7517", borderRadius: "5px", cursor: "pointer", color: "#854F0B", fontFamily: "var(--font-sans)" }}>回滚至此</button>}
                                   <button onClick={() => onDeleteVer(agent.hash, v.sha)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "5px", cursor: "pointer", color: "var(--color-text-tertiary)", fontFamily: "var(--font-sans)" }}>删除</button>
                                 </div>
-                                {isDiffOpen && dLines.length > 0 && <div style={{ marginTop: "8px" }}><DiffView lines={dLines} /></div>}
+                                {isDiffOpen && <div style={{ marginTop: "8px" }}><MonacoDiff original={prevPrompt} modified={v.systemPrompt} language="markdown" height={200} /></div>}
                               </div>
                             </div>
                           );
@@ -205,7 +204,7 @@ export default function ConfigPanel({
                       {isDirty && latestV && (
                         <div style={{ padding: "0 14px 12px" }}>
                           <div style={{ fontSize: "10px", fontWeight: 500, color: "#854F0B", marginBottom: "5px", textTransform: "uppercase", letterSpacing: "0.06em" }}>工作区 vs HEAD</div>
-                          <DiffView lines={computeDiff(latestV.systemPrompt, agent.systemPrompt)} border="#BA7517" />
+                          <MonacoDiff original={latestV.systemPrompt} modified={agent.systemPrompt} language="markdown" height={200} />
                         </div>
                       )}
                     </div>

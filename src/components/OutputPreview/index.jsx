@@ -2,7 +2,6 @@ import { useState, memo, useCallback } from "react";
 import { COLORS } from "../../constants/colors";
 import { shortHash } from "../../utils/hash";
 import MonacoDiff from "../MonacoDiff";
-import DiffView from "../DiffView";
 
 export default memo(function OutputPreview({ logs, agents, finalOutput, tokenStats }) {
   const [selectedLog, setSelectedLog] = useState(null);
