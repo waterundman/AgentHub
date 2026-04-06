@@ -3,14 +3,21 @@
   "version": "0.4.0",
   "description": "轻量多 Agent 协作平台 - Git 式版本管理 AI Agent",
   "type": "module",
-  "main": "src/index.js",
+  "main": "electron/main.cjs",
+  "author": "AgentHub Team",
+  "homepage": "https://github.com/waterundman/AgentHub",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "electron:build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
@@ -23,10 +30,80 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^41.1.1",
+    "electron-builder": "^26.8.1",
     "vite": "^5.2.0",
     "vite-plugin-node-polyfills": "^0.26.0",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "wait-on": "^9.0.4"
   },
-  "keywords": ["agent", "ai", "collaboration", "version-control"],
+  "build": {
+    "appId": "com.agenthub.app",
+    "productName": "AgentHub",
+    "copyright": "Copyright © 2026 AgentHub Team",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "projects",
+        "to": "projects"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/icons"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    }
+  },
+  "keywords": [
+    "agent",
+    "ai",
+    "collaboration",
+    "version-control",
+    "electron",
+    "desktop-app"
+  ],
   "license": "MIT"
 }

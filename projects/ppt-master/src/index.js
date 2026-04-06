@@ -4,14 +4,30 @@
  */
 
 import { PPT_MASTER_AGENT } from "../agent";
-import { spawn } from "child_process";
-import path from "path";
-import fs from "fs";
 
-const PPT_SOURCE = path.resolve("W:\\项目仓库\\agenthub\\projects\\ppt-master");
-const SCRIPTS_DIR = path.join(PPT_SOURCE, "scripts");
+// Node.js 模块延迟导入，仅在 Electron 环境中使用
+let spawn, path, fs;
+let PPT_SOURCE, SCRIPTS_DIR;
+
+async function ensureNodeModules() {
+  if (!spawn || !path || !fs) {
+    // 动态导入 Node.js 模块
+    const childProcess = await import('child_process');
+    const pathModule = await import('path');
+    const fsModule = await import('fs');
+    
+    spawn = childProcess.spawn;
+    path = pathModule.default || pathModule;
+    fs = fsModule.default || fsModule;
+    
+    PPT_SOURCE = path.resolve(process.cwd(), 'projects/ppt-master');
+    SCRIPTS_DIR = path.join(PPT_SOURCE, "scripts");
+  }
+}
 
 export async function analyzeDocument(content, options = {}) {
+  await ensureNodeModules();
+  
   return {
     type: "document_analysis",
     agent: PPT_MASTER_AGENT.name,
@@ -23,6 +39,8 @@ export async function analyzeDocument(content, options = {}) {
 }
 
 export async function generatePPT(task, options = {}) {
+  await ensureNodeModules();
+  
   const config = { ...PPT_MASTER_AGENT.config, ...options };
   const template = options.template || config.defaultTemplate;
   const outputDir = options.outputDir || path.join(PPT_SOURCE, "output");
@@ -82,6 +100,8 @@ export async function generatePPT(task, options = {}) {
 }
 
 export async function listTemplates() {
+  await ensureNodeModules();
+  
   const layoutsDir = path.join(PPT_SOURCE, "templates", "layouts");
   if (!fs.existsSync(layoutsDir)) return [];
 
