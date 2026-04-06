@@ -17,6 +17,7 @@ import TokenStatsPanel from "./TokenStatsPanel";
 import PerformanceMonitor from "./PerformanceMonitor";
 import AgentTemplates from "./AgentTemplates";
 import AgentPerfComparison from "./AgentPerfComparison";
+import ExecutionQueue from "./ExecutionQueue";
 import { useExport } from "../utils/export";
 
 export default function AgentHub() {
@@ -199,6 +200,21 @@ export default function AgentHub() {
           </div>
 
           <Pipeline agents={agents} statuses={statuses} dependencies={dependencies} />
+
+          {!running && (
+            <div style={{ marginBottom: "12px" }}>
+              <ExecutionQueue
+                agents={agents}
+                dependencies={dependencies}
+                onReorder={(from, to) => {
+                  const newAgents = [...agents];
+                  const [moved] = newAgents.splice(from, 1);
+                  newAgents.splice(to, 0, moved);
+                  persistAgents(newAgents);
+                }}
+              />
+            </div>
+          )}
 
           {logs.length > 0 && (
             <>
