@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { formatCost, formatTokens } from "../services/tokenPricing";
+import { formatCost, formatTokens } from "../../services/tokenPricing";
 
 const TokenBar = memo(function TokenBar({ label, value, max, color }) {
   const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;

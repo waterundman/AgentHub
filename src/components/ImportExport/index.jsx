@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { loadAgents, saveAgents, loadVersions, saveVersions } from "../services/storage";
-import { agentHash } from "../utils/hash";
+import { loadAgents, saveAgents, loadVersions, saveVersions } from "../../services/storage";
+import { agentHash } from "../../utils/hash";
 
 const COLOR_KEYS = ["purple", "teal", "coral", "blue", "amber", "green"];
 const ICON_CHARS = "ABCDEFGHIJKLMNOP";

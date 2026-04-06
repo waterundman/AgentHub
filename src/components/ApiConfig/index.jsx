@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { DEFAULT_CONFIG } from "../services/api";
-import { saveConfig, loadConfig } from "../services/storage";
+import { DEFAULT_CONFIG } from "../../services/api";
+import { saveConfig, loadConfig } from "../../services/storage";
 
 const PROVIDERS = [
   { key: "anthropic", label: "Anthropic (Claude)", baseUrl: "https://api.anthropic.com/v1/messages", models: ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-3-5-sonnet-20241022"] },

@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from "react";
-import { formatCost, formatTokens } from "../services/tokenPricing";
+import { formatCost, formatTokens } from "../../services/tokenPricing";
 
 function usePerformanceMonitor() {
   const [metrics, setMetrics] = useState({

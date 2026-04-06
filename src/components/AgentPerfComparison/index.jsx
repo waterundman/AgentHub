@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
-import { formatCost, formatTokens } from "../services/tokenPricing";
-import { COLORS } from "../constants/colors";
+import { formatCost, formatTokens } from "../../services/tokenPricing";
+import { COLORS } from "../../constants/colors";
 
 const STORAGE_PERF_HISTORY = "agenthub_perf_history_v1";
 

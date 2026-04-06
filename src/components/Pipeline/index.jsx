@@ -1,9 +1,9 @@
 import { memo, useState } from "react";
-import { COLORS } from "../constants/colors";
-import { shortHash } from "../utils/hash";
-import HashBadge from "./HashBadge";
-import { STATUS_MAP } from "../constants/colors";
-import Tooltip from "./Tooltip";
+import { COLORS } from "../../constants/colors";
+import { shortHash } from "../../utils/hash";
+import HashBadge from "../HashBadge";
+import { STATUS_MAP } from "../../constants/colors";
+import Tooltip from "../Tooltip";
 
 export default memo(function Pipeline({ agents, statuses, dependencies, onRemoveDep }) {
   const hasDeps = dependencies && Object.keys(dependencies).some(k => dependencies[k].length > 0);

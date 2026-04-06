@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadHistory, saveHistory } from "../services/storage";
-import { fmtTs } from "../services/storage";
+import { loadHistory, saveHistory, fmtTs } from "../../services/storage";
 
 export default function ExecutionHistory({ onSelect }) {
   const [history, setHistory] = useState([]);

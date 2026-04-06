@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DEFAULT_TEMPLATES } from "../services/templates";
+import { DEFAULT_TEMPLATES } from "../../services/templates";
 
 export default function TemplatesPanel({ templates, onSelect, onAdd, onDelete }) {
   const [showAdd, setShowAdd] = useState(false);
