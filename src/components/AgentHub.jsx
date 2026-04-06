@@ -18,6 +18,7 @@ import PerformanceMonitor from "./PerformanceMonitor";
 import AgentTemplates from "./AgentTemplates";
 import AgentPerfComparison from "./AgentPerfComparison";
 import ExecutionQueue from "./ExecutionQueue";
+import NotificationSystem, { notify } from "./NotificationSystem";
 import { useExport } from "../utils/export";
 
 export default function AgentHub() {
@@ -356,8 +357,10 @@ export default function AgentHub() {
         @keyframes scanbar { 0% { left: -45%; } 100% { left: 110%; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes tooltipFadeIn { from { opacity: 0; transform: translate(-50%, 4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
       `}</style>
       <PerformanceMonitor />
+      <NotificationSystem />
     </div>
   );
 }
