@@ -1,5 +1,3 @@
-import { useState, useCallback } from "react";
-import { COLORS, COLOR_KEYS } from "../../constants/colors";
 import { agentHash } from "../../utils/hash";
 
 const STORAGE_TEMPLATES = "agenthub_agent_templates_v1";
@@ -44,6 +42,46 @@ const DEFAULT_TEMPLATES = [
     colorKey: "coral",
     systemPrompt: "You are a UI/UX design expert. Create user-centered design solutions, wireframes, and interaction specifications. Follow accessibility guidelines and design system principles. Respond in Chinese.",
     config: { maxTokens: 2000 },
+  },
+  {
+    name: "DevOps 工程师",
+    subtitle: "DevOps Engineer",
+    icon: "O",
+    colorKey: "green",
+    systemPrompt: "You are a DevOps expert. Design CI/CD pipelines, containerize applications, manage infrastructure as code, and optimize deployment workflows. Respond in Chinese.",
+    config: { maxTokens: 2000 },
+  },
+  {
+    name: "安全审计员",
+    subtitle: "Security Auditor",
+    icon: "S",
+    colorKey: "coral",
+    systemPrompt: "You are a cybersecurity expert. Audit code and systems for vulnerabilities, suggest security best practices, and provide threat modeling. Respond in Chinese.",
+    config: { maxTokens: 2000 },
+  },
+  {
+    name: "翻译专家",
+    subtitle: "Translator",
+    icon: "T",
+    colorKey: "blue",
+    systemPrompt: "You are a professional translator. Translate text between languages while preserving tone, context, and cultural nuances. Respond in the target language.",
+    config: { maxTokens: 3000 },
+  },
+  {
+    name: "测试工程师",
+    subtitle: "QA Engineer",
+    icon: "Q",
+    colorKey: "amber",
+    systemPrompt: "You are a QA testing expert. Design test cases, identify edge cases, and ensure software quality through systematic testing strategies. Respond in Chinese.",
+    config: { maxTokens: 2000 },
+  },
+  {
+    name: "架构师",
+    subtitle: "Architect",
+    icon: "R",
+    colorKey: "purple",
+    systemPrompt: "You are a software architect. Design scalable system architectures, choose appropriate tech stacks, and define technical standards. Respond in Chinese.",
+    config: { maxTokens: 3000 },
   },
 ];
 

@@ -1,42 +1,25 @@
-import fetch from 'node-fetch';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+/**
+ * Image Generation Agent - Browser-compatible version
+ * Uses native fetch API instead of node-fetch
+ */
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config();
-
-const API_KEY = process.env.DASHSCOPE_API_KEY;
-const REPO_PATH = process.env.IMAGE_REPO_PATH || './output';
+const API_KEY = import.meta.env.VITE_DASHSCOPE_API_KEY || '';
+const REPO_PATH = './output';
 
 function ensureRepoDir() {
-    if (!fs.existsSync(REPO_PATH)) {
-        fs.mkdirSync(REPO_PATH, { recursive: true });
-    }
+  // In browser, we can't create directories, so we skip this
 }
 
 function getNextFileName() {
     const now = new Date();
     const timestamp = now.toISOString().replace(/[-:]/g, '').replace('T', '_').split('.')[0];
-    const files = fs.readdirSync(REPO_PATH).filter(f => f.endsWith('.png'));
-    let index = 1;
-    for (const file of files) {
-        const match = file.match(/^(\d{8}_\d{6})_(\d+)\.png$/);
-        if (match) {
-            const fileIndex = parseInt(match[2], 10);
-            if (fileIndex >= index) index = fileIndex + 1;
-        }
-    }
-    const indexStr = index.toString().padStart(3, '0');
+    const indexStr = '001';
     return `${timestamp}_${indexStr}.png`;
 }
 
 async function generateImage(prompt, options = {}) {
     if (!API_KEY) {
-        throw new Error('请在.env文件中配置 DASHSCOPE_API_KEY');
+        throw new Error('请在环境变量中配置 VITE_DASHSCOPE_API_KEY');
     }
 
     ensureRepoDir();
@@ -94,21 +77,15 @@ async function waitForTaskComplete(taskId, maxAttempts = 60) {
             
             for (const imgData of images) {
                 const imageUrl = imgData.url;
-                const imageResponse = await fetch(imageUrl);
-                const imageBuffer = await imageResponse.arrayBuffer();
-                
-                const fileName = getNextFileName();
-                const filePath = path.join(REPO_PATH, fileName);
-                fs.writeFileSync(filePath, Buffer.from(imageBuffer));
-                savedPaths.push(filePath);
+                savedPaths.push({
+                    url: imageUrl,
+                    name: getNextFileName()
+                });
             }
             
             return {
                 success: true,
-                images: savedPaths.map(p => ({
-                    path: p,
-                    name: path.basename(p)
-                }))
+                images: savedPaths
             };
         } else if (data.output && data.output.task_status === 'FAILED') {
             throw new Error(`生图任务失败: ${data.output.message || '未知错误'}`);
@@ -118,39 +95,6 @@ async function waitForTaskComplete(taskId, maxAttempts = 60) {
     }
     
     throw new Error('生图任务超时');
-}
-
-async function main() {
-    const args = process.argv.slice(2);
-    
-    if (args[0] === 'generate' || args[0] === 'gen') {
-        const prompt = args.slice(1).join(' ');
-        if (!prompt) {
-            console.error('请输入生图提示词');
-            console.log('用法: npm run generate -- "一只可爱的猫咪"');
-            process.exit(1);
-        }
-        
-        try {
-            console.log('正在生成图片...');
-            console.log(`提示词: ${prompt}`);
-            const result = await generateImage(prompt);
-            console.log('生成成功!');
-            console.log('图片保存至:');
-            result.images.forEach(img => console.log(`  - ${img.path}`));
-        } catch (error) {
-            console.error('生成失败:', error.message);
-            process.exit(1);
-        }
-    } else {
-        console.log('生图Agent - 通义万相API');
-        console.log('');
-        console.log('用法:');
-        console.log('  npm run generate -- "提示词"    生成图片');
-        console.log('');
-        console.log('示例:');
-        console.log('  npm run generate -- "一只可爱的猫咪"');
-    }
 }
 
 export { generateImage, waitForTaskComplete };

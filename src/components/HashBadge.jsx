@@ -12,4 +12,5 @@ export default memo(function HashBadge({ hash, color, dim }) {
       opacity: dim ? 0.7 : 1, letterSpacing: "0.03em", userSelect: "all"
     }}>{shortHash(hash)}</span>
   );
-}
+});
+

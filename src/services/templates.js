@@ -16,13 +16,6 @@ export async function saveTemplates(templates) {
   } catch {}
 }
 
-export async function loadTemplates() {
-  try {
-    const raw = await loadConfig(STORAGE_TEMPLATES);
-    return raw || [];
-  } catch { return []; }
-}
-
 export async function loadHistory() {
   try {
     const raw = await loadConfig(STORAGE_HISTORY);

@@ -12,4 +12,5 @@ export default memo(function DiffView({ lines, border }) {
       ))}
     </div>
   );
-}
+});
+
