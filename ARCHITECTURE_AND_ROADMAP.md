@@ -397,12 +397,13 @@ const changes = diffLines(oldPrompt, newPrompt);
 | i18n | ✅ | zh-CN + en-US |
 | CSS Modules | ✅ | AgentHub.module.css |
 | **Monaco Diff 视图** | ✅ | **ConfigPanel + OutputPreview** |
+| **插件系统基础架构** | ✅ | **PluginManager + Hooks + 工厂函数** |
 
 ### 🔄 Phase 4 剩余任务
 
 1. ~~**Monaco Editor Diff 视图**~~ - ✅ 已完成 (2026-04-07)
-2. **云端同步** - 团队共享配置
-3. **插件系统** - 扩展 Agent 能力
+2. ~~**插件系统基础架构**~~ - ✅ 已完成 (2026-04-07)
+3. **云端同步** - 团队共享配置
 4. **TypeScript 完全迁移** - 替代 JSDoc
 
 ---

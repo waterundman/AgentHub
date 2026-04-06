@@ -5,6 +5,11 @@
 ### Added
 - Monaco Editor Diff 视图集成，替代简陋的行级对比
 - DiffView 组件以 Monaco DiffEditor 展示版本差异和工作区对比
+- **插件系统基础架构**
+  - PluginManager: 插件注册、激活、执行和生命周期管理
+  - PluginHooks: 完整的钩子系统（支持流水线、Agent、Provider等扩展点）
+  - 插件工厂函数：createAgentPlugin, createProviderPlugin, createToolPlugin, createStoragePlugin
+  - 五种插件类型：Agent / Provider / Tool / Storage / UI
 - 全局通知系统
 - 大型 Agent 运行前的确认对话框
 - 执行队列管理集成到运行标签页
