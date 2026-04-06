@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.4.0] - 2026-04-07
+
+### Added
+- Monaco Editor Diff 视图集成，替代简陋的行级对比
+- DiffView 组件以 Monaco DiffEditor 展示版本差异和工作区对比
+- 全局通知系统
+- 大型 Agent 运行前的确认对话框
+- 执行队列管理集成到运行标签页
+- Agent 性能对比面板
+- 结果导出功能 (Markdown/JSON)
+- 无障碍访问支持 (a11y)
+- 移动端触摸交互优化
+
+### Changed
+- 组件导入路径修复 (重构后的相对路径调整)
+- ConfigPanel 使用 MonacoDiff 替代 DiffView
+- 清理未使用的 DiffView 导入
+- Agent 模板扩展 (DevOps/安全/翻译/QA/架构师)
+- Bun 环境构建优化
+
+### Fixed
+- DiffView/HashBadge 组件缺少闭合括号
+- templates.js 重复导出 loadTemplates
+- ExecutionHistory 导入路径错误
+- agentTemplates.js 导入路径错误
+
+---
+
 ## [0.3.0] - 2026-03-31
 
 ### Added

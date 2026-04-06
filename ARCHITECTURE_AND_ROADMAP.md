@@ -370,7 +370,7 @@ const changes = diffLines(oldPrompt, newPrompt);
 
 ## 七、迭代状态更新 (2026-04-01)
 
-### ✅ Phase 1-3 全部完成
+### ✅ Phase 1-3 全部完成 + Phase 4 部分完成
 
 | 类别 | 状态 | 说明 |
 |------|------|------|
@@ -396,10 +396,11 @@ const changes = diffLines(oldPrompt, newPrompt);
 | Zustand 状态 | ✅ | useStore.js |
 | i18n | ✅ | zh-CN + en-US |
 | CSS Modules | ✅ | AgentHub.module.css |
+| **Monaco Diff 视图** | ✅ | **ConfigPanel + OutputPreview** |
 
-### 🔄 下一步 (Phase 4)
+### 🔄 Phase 4 剩余任务
 
-1. **Monaco Editor Diff 视图** - 替代当前简陋 diff
+1. ~~**Monaco Editor Diff 视图**~~ - ✅ 已完成 (2026-04-07)
 2. **云端同步** - 团队共享配置
 3. **插件系统** - 扩展 Agent 能力
 4. **TypeScript 完全迁移** - 替代 JSDoc
