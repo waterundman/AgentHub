@@ -34,6 +34,7 @@ export default function AgentHub() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [subTab, setSubTab] = useState("templates");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const { theme, toggleTheme, isDark } = useTheme();
   const { exportMarkdown, exportJSON } = useExport();
 
@@ -75,6 +76,19 @@ export default function AgentHub() {
   const handleRun = useCallback(() => {
     run(task, agents, dependencies);
   }, [run, task, agents, dependencies]);
+
+  const handleRunWithConfirm = useCallback(() => {
+    if (agents.length > 4) {
+      setShowConfirm(true);
+    } else {
+      handleRun();
+    }
+  }, [handleRun, agents.length]);
+
+  const confirmRun = useCallback(() => {
+    setShowConfirm(false);
+    handleRun();
+  }, [handleRun]);
 
   const handleStop = useCallback(() => {
     stop();
@@ -180,7 +194,7 @@ export default function AgentHub() {
             <textarea value={task} onChange={e => setTask(e.target.value)} onKeyDown={e => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") handleRun(); }} placeholder="输入任务描述... (Ctrl+Enter 启动)" disabled={running} rows={3}
               style={{ width: "100%", boxSizing: "border-box", resize: "vertical", padding: "10px 12px", fontSize: "14px", lineHeight: 1.6, border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", background: "var(--color-background-primary)", color: "var(--color-text-primary)", fontFamily: "var(--font-sans)" }} />
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-              <button onClick={handleRun} disabled={running || !task.trim()} style={{ padding: "7px 18px", fontSize: "13px", fontWeight: 500, background: (!running && task.trim()) ? "var(--color-text-primary)" : "var(--color-background-secondary)", color: (!running && task.trim()) ? "var(--color-background-primary)" : "var(--color-text-tertiary)", border: "none", borderRadius: "var(--border-radius-md)", cursor: (!running && task.trim()) ? "pointer" : "not-allowed", fontFamily: "var(--font-sans)" }}>
+              <button onClick={handleRunWithConfirm} disabled={running || !task.trim()} style={{ padding: "7px 18px", fontSize: "13px", fontWeight: 500, background: (!running && task.trim()) ? "var(--color-text-primary)" : "var(--color-background-secondary)", color: (!running && task.trim()) ? "var(--color-background-primary)" : "var(--color-text-tertiary)", border: "none", borderRadius: "var(--border-radius-md)", cursor: (!running && task.trim()) ? "pointer" : "not-allowed", fontFamily: "var(--font-sans)" }}>
                 {running ? `处理中 ${doneCount}/${agents.length}` : "▶ 启动"}
               </button>
               {running && (
@@ -299,6 +313,22 @@ export default function AgentHub() {
           {subTab === "history" && <ExecutionHistory onSelect={(entry) => { setTask(entry.task); }} />}
           {subTab === "perf" && <AgentPerfComparison />}
           {subTab === "io" && <ImportExport agents={agents} versions={versions} onImport={handleImport} />}
+        </div>
+      )}
+
+      {/* ══ CONFIRM MODAL ════════════════════════════════════ */}
+      {showConfirm && (
+        <div onClick={() => setShowConfirm(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9998, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-secondary)", borderRadius: "12px", padding: "24px", maxWidth: "360px", width: "90%", boxShadow: "0 12px 32px rgba(0,0,0,0.3)" }}>
+            <div style={{ fontSize: "14px", fontWeight: 500, color: "var(--color-text-primary)", marginBottom: "8px" }}>确认启动</div>
+            <div style={{ fontSize: "13px", color: "var(--color-text-secondary)", marginBottom: "16px", lineHeight: 1.5 }}>
+              即将启动 {agents.length} 个 Agent 协作执行任务，预计消耗较多 Token。是否继续？
+            </div>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+              <button onClick={() => setShowConfirm(false)} style={{ padding: "8px 16px", fontSize: "12px", background: "transparent", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", cursor: "pointer", color: "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}>取消</button>
+              <button onClick={confirmRun} style={{ padding: "8px 16px", fontSize: "12px", fontWeight: 500, background: "var(--color-text-primary)", color: "var(--color-background-primary)", border: "none", borderRadius: "var(--border-radius-md)", cursor: "pointer", fontFamily: "var(--font-sans)" }}>确认启动</button>
+            </div>
+          </div>
         </div>
       )}
 
