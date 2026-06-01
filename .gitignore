@@ -11,3 +11,17 @@ __pycache__/
 *.egg-info/
 .vscode/
 .idea/
+
+# 文档文件（本地使用，不提交）
+CHANGELOG.md
+deep-research-report.md
+功能清单.md
+llm router经验总结.md
+
+# 测试截图
+tests/screenshots/
+tests/e2e/screenshots/
+
+# 临时测试文件
+tests/ui_*.py
+tests/ui_*.py
