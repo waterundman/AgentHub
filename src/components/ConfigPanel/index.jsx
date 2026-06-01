@@ -6,6 +6,9 @@ import { fmtTs } from "../../services/storage";
 import HashBadge from "../HashBadge";
 import MonacoDiff from "../MonacoDiff";
 import Tooltip from "../Tooltip";
+import { Icon, GitBranch, GitCommit, RotateCcw, Trash } from "../Icon";
+import { AgentToolSandbox } from "../AgentToolSandbox";
+import { AgentLLMConfig } from "../AgentLLMConfig";
 
 export default function ConfigPanel({
   agents,
@@ -19,6 +22,8 @@ export default function ConfigPanel({
   dependencies = {},
   onToggleDep,
   allAgents = [],
+  globalConfig,
+  onUpdateAgentLLMConfig,
 }) {
   const [vUI, setVUI] = useState({});
   const [commitMsg, setCommitMsg] = useState({});
@@ -134,23 +139,81 @@ export default function ConfigPanel({
                         </select>
                       </div>
                     </div>
+
+                    {/* 工具权限配置 */}
+                    <div style={{ marginBottom: "12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                        <button
+                          onClick={() => setVUI(p => ({ ...p, [agent.hash]: { ...ui, toolConfig: !ui.toolConfig } }))}
+                          style={{
+                            padding: "6px 12px",
+                            fontSize: "12px",
+                            background: ui.toolConfig ? c.fill : "transparent",
+                            border: `0.5px solid ${ui.toolConfig ? c.stroke : "var(--color-border-secondary)"}`,
+                            borderRadius: "var(--border-radius-md)",
+                            cursor: "pointer",
+                            color: ui.toolConfig ? c.text : "var(--color-text-secondary)",
+                            fontFamily: "var(--font-sans)",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px"
+                          }}
+                        >
+                          <Icon name="Shield" size={14} />
+                          工具权限 {ui.toolConfig ? "▲" : "▼"}
+                        </button>
+                        {agent.toolConfig && (
+                          <span style={{
+                            fontSize: "10px",
+                            padding: "2px 6px",
+                            borderRadius: "99px",
+                            background: agent.toolConfig.allowedTools?.length > 0 ? "#E1F5EE" : "#FAEEDA",
+                            color: agent.toolConfig.allowedTools?.length > 0 ? "#1D9E75" : "#854F0B",
+                            border: `0.5px solid ${agent.toolConfig.allowedTools?.length > 0 ? "#1D9E75" : "#BA7517"}`
+                          }}>
+                            {agent.toolConfig.allowedTools?.length > 0 ? "自定义权限" : "默认权限"}
+                          </span>
+                        )}
+                      </div>
+                      {ui.toolConfig && (
+                        <AgentToolSandbox
+                          agent={agent}
+                          onUpdate={(updatedAgent) => {
+                            const u = agents.map(a => a.hash === agent.hash ? updatedAgent : a);
+                            onPersistAgents(u);
+                          }}
+                        />
+                      )}
+                    </div>
                     <div style={{ marginBottom: "12px" }}>
                       <label style={{ display: "block", fontSize: "10px", fontWeight: 500, color: "var(--color-text-secondary)", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.06em" }}>系统提示词</label>
                       <textarea value={agent.systemPrompt} onChange={e => { const u = agents.map(a => a.hash === agent.hash ? { ...a, systemPrompt: e.target.value } : a); onPersistAgents(u); }} rows={4}
                         style={{ width: "100%", boxSizing: "border-box", resize: "vertical", padding: "8px 10px", fontSize: "12px", lineHeight: 1.6, border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", background: "var(--color-background-secondary)", color: "var(--color-text-primary)", fontFamily: "var(--font-mono)" }} />
                     </div>
 
+                    {onUpdateAgentLLMConfig && (
+                      <AgentLLMConfig
+                        agent={agent}
+                        onUpdate={(updatedAgent) => {
+                          onUpdateAgentLLMConfig(updatedAgent.hash, updatedAgent.llmConfig);
+                        }}
+                        globalConfig={globalConfig}
+                      />
+                    )}
+
                     <div style={{ display: "flex", gap: "7px", alignItems: "center" }}>
                       <input value={commitMsg[agent.hash] || ""} onChange={e => setCommitMsg(p => ({ ...p, [agent.hash]: e.target.value }))} placeholder="提交备注（可选）"
                         onKeyDown={e => { if (e.key === "Enter") onCommit(agent, commitMsg[agent.hash] || ""); }}
                         style={{ flex: 1, padding: "6px 10px", fontSize: "12px", border: "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)", background: "var(--color-background-secondary)", color: "var(--color-text-primary)", fontFamily: "var(--font-sans)" }} />
                       <button onClick={() => onCommit(agent, commitMsg[agent.hash] || "")}
-                        style={{ padding: "6px 14px", fontSize: "12px", fontWeight: 500, background: c.stroke, color: "#fff", border: "none", borderRadius: "var(--border-radius-md)", cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--font-sans)" }}>
+                        style={{ padding: "6px 14px", fontSize: "12px", fontWeight: 500, background: c.stroke, color: "#fff", border: "none", borderRadius: "var(--border-radius-md)", cursor: "pointer", whiteSpace: "nowrap", fontFamily: "var(--font-sans)", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Icon name="GitCommit" size={14} />
                         提交版本
                       </button>
                       {vList.length > 0 && (
                         <button onClick={() => setVUI(p => ({ ...p, [agent.hash]: { ...ui, panel: ui.panel === "history" ? null : "history", diffSha: null } }))}
-                          style={{ padding: "6px 12px", fontSize: "12px", background: ui.panel === "history" ? c.fill : "transparent", border: `0.5px solid ${ui.panel === "history" ? c.stroke : "var(--color-border-secondary)"}`, borderRadius: "var(--border-radius-md)", cursor: "pointer", color: ui.panel === "history" ? c.text : "var(--color-text-secondary)", fontFamily: "var(--font-sans)" }}>
+                          style={{ padding: "6px 12px", fontSize: "12px", background: ui.panel === "history" ? c.fill : "transparent", border: `0.5px solid ${ui.panel === "history" ? c.stroke : "var(--color-border-secondary)"}`, borderRadius: "var(--border-radius-md)", cursor: "pointer", color: ui.panel === "history" ? c.text : "var(--color-text-secondary)", fontFamily: "var(--font-sans)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <Icon name="GitBranch" size={14} />
                           历史 {ui.panel === "history" ? "▲" : "▼"}
                         </button>
                       )}
@@ -192,8 +255,14 @@ export default function ConfigPanel({
                                       {dels > 0 && <span style={{ color: "#E24B4A", marginLeft: "3px" }}>−{dels}</span>}
                                     </span>
                                   )}
-                                  {!isLatest && <button onClick={() => onRevert(agent.hash, v)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid #BA7517", borderRadius: "5px", cursor: "pointer", color: "#854F0B", fontFamily: "var(--font-sans)" }}>回滚至此</button>}
-                                  <button onClick={() => onDeleteVer(agent.hash, v.sha)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "5px", cursor: "pointer", color: "var(--color-text-tertiary)", fontFamily: "var(--font-sans)" }}>删除</button>
+                                  {!isLatest && <button onClick={() => onRevert(agent.hash, v)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid #BA7517", borderRadius: "5px", cursor: "pointer", color: "#854F0B", fontFamily: "var(--font-sans)", display: "flex", alignItems: "center", gap: "4px" }}>
+                                    <Icon name="RotateCcw" size={14} />
+                                    回滚至此
+                                  </button>}
+                                  <button onClick={() => onDeleteVer(agent.hash, v.sha)} style={{ fontSize: "11px", padding: "2px 8px", background: "transparent", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "5px", cursor: "pointer", color: "var(--color-text-tertiary)", fontFamily: "var(--font-sans)", display: "flex", alignItems: "center", gap: "4px" }}>
+                                    <Icon name="Trash" size={14} />
+                                    删除
+                                  </button>
                                 </div>
                                 {isDiffOpen && <div style={{ marginTop: "8px" }}><MonacoDiff original={prevPrompt} modified={v.systemPrompt} language="markdown" height={200} /></div>}
                               </div>

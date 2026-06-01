@@ -1,17 +1,22 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { COLORS } from "../../constants/colors";
 import { shortHash } from "../../utils/hash";
+import { useTaskStore } from "../../store/useTaskStore";
+import TaskBoard from "./TaskBoard";
+import TaskMessage from "./TaskMessage";
 
 export default function AgentChat({ agents, logs, running }) {
+  const { taskLogs } = useTaskStore();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [activePanel, setActivePanel] = useState("messages"); // "messages" | "tasks"
   const endRef = useRef(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, taskLogs]);
 
   useEffect(() => {
     if (logs.length > 0) {
@@ -29,6 +34,16 @@ export default function AgentChat({ agents, logs, running }) {
       }
     }
   }, [logs]);
+
+  const allMessages = useMemo(() => {
+    const merged = [
+      ...messages.map((m) => ({ ...m, _type: "message" })),
+      ...taskLogs.map((l) => ({ ...l, _type: "task", id: `task-${l.id}` })),
+    ];
+    return merged.sort(
+      (a, b) => new Date(a.timestamp || a.ts) - new Date(b.timestamp || b.ts)
+    );
+  }, [messages, taskLogs]);
 
   const sendMessage = useCallback(() => {
     if (!input.trim() || !selectedAgent) return;
@@ -58,16 +73,47 @@ export default function AgentChat({ agents, logs, running }) {
         padding: "10px 14px", cursor: "pointer",
         background: "var(--color-background-secondary)",
       }}>
-        <div style={{ fontSize: "10px", fontWeight: 500, color: "var(--color-text-tertiary)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-          Agent 消息 {messages.length > 0 && `(${messages.length})`}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ fontSize: "10px", fontWeight: 500, color: "var(--color-text-tertiary)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            Agent 消息 {messages.length > 0 && `(${messages.length})`}
+          </div>
+          <div style={{ display: "flex", gap: "2px" }}>
+            <button onClick={(e) => { e.stopPropagation(); setActivePanel("messages"); setExpanded(true); }} style={{
+              padding: "2px 8px", fontSize: "10px", fontWeight: 500, border: "none", borderRadius: "99px",
+              background: activePanel === "messages" ? "#378ADD" : "var(--color-background-primary)",
+              color: activePanel === "messages" ? "#fff" : "var(--color-text-tertiary)",
+              cursor: "pointer", fontFamily: "var(--font-sans)",
+            }}>
+              消息
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); setActivePanel("tasks"); setExpanded(true); }} style={{
+              padding: "2px 8px", fontSize: "10px", fontWeight: 500, border: "none", borderRadius: "99px",
+              background: activePanel === "tasks" ? "#378ADD" : "var(--color-background-primary)",
+              color: activePanel === "tasks" ? "#fff" : "var(--color-text-tertiary)",
+              cursor: "pointer", fontFamily: "var(--font-sans)",
+            }}>
+              任务
+            </button>
+          </div>
         </div>
         <span style={{ fontSize: "11px", color: "var(--color-text-tertiary)" }}>{expanded ? "▲" : "▼"}</span>
       </div>
 
-      {expanded && (
+      {expanded && activePanel === "tasks" && (
+        <div style={{ height: "320px" }}>
+          <TaskBoard agents={agents} />
+        </div>
+      )}
+
+      {expanded && activePanel === "messages" && (
         <>
           <div style={{ height: "250px", overflowY: "auto", padding: "10px" }}>
-            {messages.map(msg => {
+            {allMessages.map((msg) => {
+              if (msg._type === "task") {
+                return (
+                  <TaskMessage key={msg.id} log={msg} agents={agents} />
+                );
+              }
               const ag = agents.find(a => a.hash === msg.agentHash);
               const c = ag ? (COLORS[ag.colorKey] || COLORS.purple) : COLORS.purple;
               const isUser = msg.type === "user";

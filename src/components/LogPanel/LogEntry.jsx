@@ -1,6 +1,8 @@
 import { useState, useCallback, memo } from "react";
 import { COLORS } from "../../constants/colors";
 import { shortHash } from "../../utils/hash";
+import { Icon, Copy, ChevronDown, ChevronUp } from "../Icon";
+import { ToolUseTagList } from "../ToolUseTag";
 
 export default memo(function LogEntry({ log, agents, expanded, onToggle }) {
   const [copied, setCopied] = useState(false);
@@ -35,8 +37,10 @@ export default memo(function LogEntry({ log, agents, expanded, onToggle }) {
           borderRadius: "5px", cursor: "pointer",
           color: copied ? "#1D9E75" : "var(--color-text-tertiary)",
           fontFamily: "var(--font-sans)",
+          display: "flex", alignItems: "center", gap: "4px"
         }}>
-          {copied ? "✓ 已复制" : "复制"}
+          {copied ? <Icon name="Check" size={14} /> : <Icon name="Copy" size={14} />}
+          {copied ? "已复制" : "复制"}
         </button>
         <button onClick={onToggle} style={{
           fontSize: "10px", padding: "2px 8px",
@@ -45,7 +49,9 @@ export default memo(function LogEntry({ log, agents, expanded, onToggle }) {
           borderRadius: "5px", cursor: "pointer",
           color: "var(--color-text-tertiary)",
           fontFamily: "var(--font-sans)",
+          display: "flex", alignItems: "center", gap: "4px"
         }}>
+          {expanded ? <Icon name="ChevronUp" size={14} /> : <Icon name="ChevronDown" size={14} />}
           {expanded ? "收起" : "展开"}
         </button>
       </div>
@@ -64,6 +70,11 @@ export default memo(function LogEntry({ log, agents, expanded, onToggle }) {
         {log.content || "\u00a0"}
         {!log.done && <span style={{ animation: "blink 0.9s step-start infinite" }}>▌</span>}
       </div>
+      {log.toolCalls && log.toolCalls.length > 0 && (
+        <div style={{ marginTop: '6px' }}>
+          <ToolUseTagList records={log.toolCalls} />
+        </div>
+      )}
     </div>
   );
 });

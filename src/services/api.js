@@ -1,3 +1,5 @@
+import { getProviderAdapter } from './providers/index.js';
+
 const DEFAULT_CONFIG = {
   provider: "anthropic",
   model: "claude-sonnet-4-20250514",
@@ -6,106 +8,34 @@ const DEFAULT_CONFIG = {
   maxTokens: 1000,
   maxRetries: 3,
   retryDelay: 1000,
+  useRouter: false,
+  routingStrategy: "fallback",
 };
-
-function getProviderHeaders(config) {
-  switch (config.provider) {
-    case "anthropic":
-      return {
-        "Content-Type": "application/json",
-        "x-api-key": config.apiKey,
-        "anthropic-version": "2023-06-01",
-      };
-    case "openai":
-      return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${config.apiKey}`,
-      };
-    default:
-      return { "Content-Type": "application/json" };
-  }
-}
-
-function buildRequestBody(config, systemPrompt, messages) {
-  switch (config.provider) {
-    case "anthropic":
-      return {
-        model: config.model,
-        max_tokens: config.maxTokens,
-        system: systemPrompt,
-        messages,
-      };
-    case "openai":
-      return {
-        model: config.model,
-        max_tokens: config.maxTokens,
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
-      };
-    default:
-      return {
-        model: config.model,
-        max_tokens: config.maxTokens,
-        system: systemPrompt,
-        messages,
-      };
-  }
-}
-
-function parseResponse(config, data) {
-  switch (config.provider) {
-    case "anthropic":
-      return data.content?.find(b => b.type === "text")?.text || "(无输出)";
-    case "openai":
-      return data.choices?.[0]?.message?.content || "(无输出)";
-    default:
-      return data.content?.find(b => b.type === "text")?.text || "(无输出)";
-  }
-}
-
-function extractUsage(config, data) {
-  switch (config.provider) {
-    case "anthropic": {
-      const usage = data.usage || {};
-      return {
-        inputTokens: usage.input_tokens || 0,
-        outputTokens: usage.output_tokens || 0,
-        cacheReadTokens: usage.cache_read_input_tokens || 0,
-        cacheWriteTokens: usage.cache_creation_input_tokens || 0,
-      };
-    }
-    case "openai": {
-      const usage = data.usage || {};
-      return {
-        inputTokens: usage.prompt_tokens || 0,
-        outputTokens: usage.completion_tokens || 0,
-        cacheReadTokens: 0,
-        cacheWriteTokens: 0,
-      };
-    }
-    default: {
-      const usage = data.usage || {};
-      return {
-        inputTokens: usage.input_tokens || 0,
-        outputTokens: usage.output_tokens || 0,
-        cacheReadTokens: 0,
-        cacheWriteTokens: 0,
-      };
-    }
-  }
-}
 
 async function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
 export async function callAgent(config, systemPrompt, content) {
+  if (config.useRouter) {
+    try {
+      const { callAgentWithRouter } = await import('./llmRouter.js');
+      return await callAgentWithRouter(config, systemPrompt, content, {
+        strategy: config.routingStrategy,
+      });
+    } catch (error) {
+      console.warn('LLM Router not available, falling back to direct call:', error.message);
+    }
+  }
+
+  const adapter = getProviderAdapter(config.provider, config);
   const { maxRetries = 3, retryDelay = 1000 } = config;
   let lastErr;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      const headers = getProviderHeaders(config);
-      const body = buildRequestBody(config, systemPrompt, [{ role: "user", content }]);
+      const headers = adapter.getHeaders();
+      const body = adapter.buildBody(systemPrompt, [{ role: "user", content }]);
       const startTime = Date.now();
 
       const res = await fetch(config.baseUrl, {
@@ -121,10 +51,10 @@ export async function callAgent(config, systemPrompt, content) {
 
       const data = await res.json();
       const duration = Date.now() - startTime;
-      const usage = extractUsage(config, data);
+      const usage = adapter.extractUsage(data);
 
       return {
-        text: parseResponse(config, data),
+        text: adapter.extractText(data),
         usage,
         duration,
         tokenRate: usage.outputTokens > 0 ? Math.round((usage.outputTokens / duration) * 1000) : 0,
@@ -141,8 +71,20 @@ export async function callAgent(config, systemPrompt, content) {
 }
 
 export async function streamCallAgent(config, systemPrompt, content, onChunk) {
-  const headers = getProviderHeaders(config);
-  const body = buildRequestBody(config, systemPrompt, [{ role: "user", content }]);
+  if (config.useRouter) {
+    try {
+      const { streamCallAgentWithRouter } = await import('./llmRouter.js');
+      return await streamCallAgentWithRouter(config, systemPrompt, content, onChunk, {
+        strategy: config.routingStrategy,
+      });
+    } catch (error) {
+      console.warn('LLM Router not available, falling back to direct stream:', error.message);
+    }
+  }
+
+  const adapter = getProviderAdapter(config.provider, config);
+  const headers = adapter.getHeaders();
+  const body = adapter.buildBody(systemPrompt, [{ role: "user", content }]);
   const startTime = Date.now();
 
   const res = await fetch(config.baseUrl, {
@@ -158,10 +100,10 @@ export async function streamCallAgent(config, systemPrompt, content, onChunk) {
 
   if (!res.body) {
     const data = await res.json();
-    const usage = extractUsage(config, data);
+    const usage = adapter.extractUsage(data);
     const duration = Date.now() - startTime;
     return {
-      text: parseResponse(config, data),
+      text: adapter.extractText(data),
       usage,
       duration,
       tokenRate: usage.outputTokens > 0 ? Math.round((usage.outputTokens / duration) * 1000) : 0,
@@ -188,14 +130,7 @@ export async function streamCallAgent(config, systemPrompt, content, onChunk) {
 
       try {
         const json = JSON.parse(trimmed.slice(6));
-        let chunk = "";
-        if (config.provider === "anthropic") {
-          if (json.type === "content_block_delta") {
-            chunk = json.delta?.text || "";
-          }
-        } else if (config.provider === "openai") {
-          chunk = json.choices?.[0]?.delta?.content || "";
-        }
+        const chunk = adapter.parseStreamChunk(json);
         if (chunk) {
           fullText += chunk;
           onChunk(fullText);

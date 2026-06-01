@@ -27,7 +27,11 @@ src/
 │   ├── ImportExport/           # 导入导出
 │   └── ExecutionHistory/       # 执行历史
 ├── hooks/
-│   └── index.js                # useAgents, useVersions, usePipeline
+│   └── index.js                # useAgents, useVersions, usePipeline (delegates to store)
+├── store/
+│   ├── index.js                # useAgentStore, usePipelineStore
+│   ├── useAgentStore.js        # Agent状态管理
+│   └── usePipelineStore.js     # 流水线状态管理
 ├── services/
 │   ├── api.js                  # 多提供商 LLM API 抽象
 │   ├── storage.js              # 存储适配层

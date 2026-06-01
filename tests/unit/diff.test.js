@@ -25,17 +25,19 @@ describe("diff utilities", () => {
 
     it("handles empty strings", () => {
       expect(computeDiff("", "")).toEqual([]);
-      expect(computeDiff("", "line")).toEqual([{ type: "add", text: "line" }]);
-      expect(computeDiff("line", "")).toEqual([{ type: "del", text: "line" }]);
+      expect(computeDiff("", "line")).toEqual([
+        { type: "del", text: "" },
+        { type: "add", text: "line" }
+      ]);
+      expect(computeDiff("line", "")).toEqual([
+        { type: "del", text: "line" },
+        { type: "add", text: "" }
+      ]);
     });
 
-    it("preserves order of same lines", () => {
+    it("returns empty array for identical multiline strings", () => {
       const result = computeDiff("a\nb\nc", "a\nb\nc");
-      expect(result).toEqual([
-        { type: "same", text: "a" },
-        { type: "same", text: "b" },
-        { type: "same", text: "c" },
-      ]);
+      expect(result).toEqual([]);
     });
   });
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DEFAULT_CONFIG } from "../../services/api";
 import { saveConfig, loadConfig } from "../../services/storage";
+import { Icon, Wifi, WifiOff, Check, X } from "../Icon";
 
 const PROVIDERS = [
   { key: "anthropic", label: "Anthropic (Claude)", baseUrl: "https://api.anthropic.com/v1/messages", models: ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-3-5-sonnet-20241022"] },
@@ -129,15 +130,17 @@ export default function ApiConfig({ config, onChange }) {
 
         {/* Test Result */}
         {testResult && (
-          <div style={{ marginBottom: "14px", padding: "8px 12px", borderRadius: "6px", fontSize: "12px", background: testResult.ok ? "#E1F5EE" : "#FAECE7", color: testResult.ok ? "#085041" : "#993C1D", border: `0.5px solid ${testResult.ok ? "#1D9E75" : "#D85A30"}` }}>
-            {testResult.ok ? "✓ " : "✕ "}{testResult.msg}
+          <div style={{ marginBottom: "14px", padding: "8px 12px", borderRadius: "6px", fontSize: "12px", background: testResult.ok ? "#E1F5EE" : "#FAECE7", color: testResult.ok ? "#085041" : "#993C1D", border: `0.5px solid ${testResult.ok ? "#1D9E75" : "#D85A30"}`, display: "flex", alignItems: "center", gap: "6px" }}>
+            {testResult.ok ? <Icon name="Check" size={14} /> : <Icon name="X" size={14} />}
+            {testResult.msg}
           </div>
         )}
 
         {/* Actions */}
         <div style={{ display: "flex", gap: "8px" }}>
           <button onClick={testConnection} disabled={testing}
-            style={{ padding: "8px 16px", fontSize: "12px", fontWeight: 500, background: testing ? "var(--color-background-secondary)" : "#378ADD", color: testing ? "var(--color-text-tertiary)" : "#fff", border: "none", borderRadius: "var(--border-radius-md)", cursor: testing ? "not-allowed" : "pointer", fontFamily: "var(--font-sans)" }}>
+            style={{ padding: "8px 16px", fontSize: "12px", fontWeight: 500, background: testing ? "var(--color-background-secondary)" : "#378ADD", color: testing ? "var(--color-text-tertiary)" : "#fff", border: "none", borderRadius: "var(--border-radius-md)", cursor: testing ? "not-allowed" : "pointer", fontFamily: "var(--font-sans)", display: "flex", alignItems: "center", gap: "6px" }}>
+            {testing ? <Icon name="Loader" size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Icon name="Wifi" size={14} />}
             {testing ? "测试中..." : "测试连接"}
           </button>
           <button onClick={saveSettings}

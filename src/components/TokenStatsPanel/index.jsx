@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { formatCost, formatTokens } from "../../services/tokenPricing";
+import { Icon, Coins, Clock, Zap } from "../Icon";
 
 const TokenBar = memo(function TokenBar({ label, value, max, color }) {
   const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;
@@ -30,13 +31,16 @@ export default memo(function TokenStatsPanel({ stats, config }) {
       {/* Summary */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", marginBottom: "14px" }}>
         {[
-          { label: "总 Token", value: formatTokens(summary.totalTokens), color: "var(--color-text-primary)" },
-          { label: "输入", value: formatTokens(summary.totalInput), color: "#378ADD" },
-          { label: "输出", value: formatTokens(summary.totalOutput), color: "#1D9E75" },
-          { label: "耗时", value: `${(summary.totalDuration / 1000).toFixed(1)}s`, color: "#BA7517" },
+          { label: "总 Token", value: formatTokens(summary.totalTokens), color: "var(--color-text-primary)", icon: "Coins" },
+          { label: "输入", value: formatTokens(summary.totalInput), color: "#378ADD", icon: "Coins" },
+          { label: "输出", value: formatTokens(summary.totalOutput), color: "#1D9E75", icon: "Coins" },
+          { label: "耗时", value: `${(summary.totalDuration / 1000).toFixed(1)}s`, color: "#BA7517", icon: "Clock" },
         ].map((item, i) => (
           <div key={i} style={{ textAlign: "center", padding: "8px", background: "var(--color-background-secondary)", borderRadius: "8px" }}>
-            <div style={{ fontSize: "10px", color: "var(--color-text-tertiary)", marginBottom: "2px" }}>{item.label}</div>
+            <div style={{ fontSize: "10px", color: "var(--color-text-tertiary)", marginBottom: "2px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+              <Icon name={item.icon} size={12} />
+              {item.label}
+            </div>
             <div style={{ fontSize: "14px", fontWeight: 600, color: item.color, fontFamily: "var(--font-mono)" }}>{item.value}</div>
           </div>
         ))}
@@ -64,8 +68,11 @@ export default memo(function TokenStatsPanel({ stats, config }) {
       </div>
 
       {/* Average rate */}
-      <div style={{ marginTop: "12px", padding: "8px 12px", background: "var(--color-background-info)", borderRadius: "6px", display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-        <span style={{ color: "var(--color-text-secondary)" }}>平均 Token 速率</span>
+      <div style={{ marginTop: "12px", padding: "8px 12px", background: "var(--color-background-info)", borderRadius: "6px", display: "flex", justifyContent: "space-between", fontSize: "11px", alignItems: "center" }}>
+        <span style={{ color: "var(--color-text-secondary)", display: "flex", alignItems: "center", gap: "4px" }}>
+          <Icon name="Zap" size={12} />
+          平均 Token 速率
+        </span>
         <span style={{ fontWeight: 600, fontFamily: "var(--font-mono)", color: "var(--color-text-primary)" }}>{Math.round(summary.avgTokenRate)} tok/s</span>
       </div>
     </div>

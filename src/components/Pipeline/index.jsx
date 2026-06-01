@@ -4,8 +4,10 @@ import { shortHash } from "../../utils/hash";
 import HashBadge from "../HashBadge";
 import { STATUS_MAP } from "../../constants/colors";
 import Tooltip from "../Tooltip";
+import { Icon, Check, X, Loader, Circle } from "../Icon";
+import { ToolUseTagList } from "../ToolUseTag";
 
-export default memo(function Pipeline({ agents, statuses, dependencies, onRemoveDep }) {
+export default memo(function Pipeline({ agents, statuses, dependencies, onRemoveDep, toolCalls = {} }) {
   const hasDeps = dependencies && Object.keys(dependencies).some(k => dependencies[k].length > 0);
   const [hoveredHash, setHoveredHash] = useState(null);
 
@@ -47,11 +49,21 @@ export default memo(function Pipeline({ agents, statuses, dependencies, onRemove
                 >
                   {isRunning && <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "2px", overflow: "hidden" }}><div style={{ position: "absolute", height: "100%", width: "45%", background: c.mid, animation: "scanbar 1.1s ease-in-out infinite" }} /></div>}
                   <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: isDone ? c.stroke : isRunning ? c.fill : "var(--color-background-secondary)", border: `1.5px solid ${(isDone || isRunning) ? c.stroke : "var(--color-border-secondary)"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.35s ease" }}>
-                    {isDone ? <span style={{ color: "#fff", fontSize: "14px", fontWeight: 500 }}>✓</span> : isError ? <span style={{ color: "#E24B4A", fontSize: "13px", fontWeight: 500 }}>✕</span> : <span style={{ fontSize: "12px", fontWeight: 500, color: isRunning ? c.text : "var(--color-text-secondary)" }}>{agent.icon}</span>}
+                    {isDone ? <Icon name="Check" size={14} color="#fff" /> : isError ? <Icon name="X" size={14} color="#E24B4A" /> : isRunning ? <Icon name="Loader" size={14} color={c.text} style={{ animation: 'spin 1s linear infinite' }} /> : <Icon name="Circle" size={14} color="var(--color-text-secondary)" />}
                   </div>
                   <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--color-text-primary)", whiteSpace: "nowrap" }}>{agent.name}</span>
                   <HashBadge hash={agent.hash} color={isDone || isRunning ? c : null} />
                   <span style={{ fontSize: "10px", color: STATUS_MAP[s]?.color, fontWeight: s !== "idle" ? 500 : 400 }}>{STATUS_MAP[s]?.label}</span>
+                  {toolCalls[agent.hash] && toolCalls[agent.hash].length > 0 && (
+                    <div style={{ marginTop: "4px", maxWidth: "120px" }}>
+                      <ToolUseTagList records={toolCalls[agent.hash].slice(0, 3)} />
+                      {toolCalls[agent.hash].length > 3 && (
+                        <span style={{ fontSize: "9px", color: "var(--color-text-tertiary)", marginTop: "2px", display: "block" }}>
+                          +{toolCalls[agent.hash].length - 3} 更多
+                        </span>
+                      )}
+                    </div>
+                  )}
                   {deps.length > 0 && (
                     <div style={{ display: "flex", gap: "3px", flexWrap: "wrap", justifyContent: "center" }}>
                       {deps.map(d => (

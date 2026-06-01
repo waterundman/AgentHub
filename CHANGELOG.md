@@ -1,94 +1,262 @@
-# Changelog
+# AgentHub 更新日志
 
-## [0.4.0] - 2026-04-07
+## v1.4.0 (2026-05-31)
 
-### Added
-- Monaco Editor Diff 视图集成，替代简陋的行级对比
-- DiffView 组件以 Monaco DiffEditor 展示版本差异和工作区对比
-- **插件系统基础架构**
-  - PluginManager: 插件注册、激活、执行和生命周期管理
-  - PluginHooks: 完整的钩子系统（支持流水线、Agent、Provider等扩展点）
-  - 插件工厂函数：createAgentPlugin, createProviderPlugin, createToolPlugin, createStoragePlugin
-  - 五种插件类型：Agent / Provider / Tool / Storage / UI
-- **Electron 桌面应用支持**
-  - 跨平台桌面应用打包 (Windows/macOS/Linux)
-  - Electron 主进程和渲染进程通信
-  - 应用菜单和系统托盘集成
-  - 本地文件系统访问能力
-- 全局通知系统
-- 大型 Agent 运行前的确认对话框
-- 执行队列管理集成到运行标签页
-- Agent 性能对比面板
-- 结果导出功能 (Markdown/JSON)
-- 无障碍访问支持 (a11y)
-- 移动端触摸交互优化
+### Bug修复
 
-### Changed
-- 组件导入路径修复 (重构后的相对路径调整)
-- ConfigPanel 使用 MonacoDiff 替代 DiffView
-- 清理未使用的 DiffView 导入
-- Agent 模板扩展 (DevOps/安全/翻译/QA/架构师)
-- Bun 环境构建优化
+#### 模块导入修复
+- 修复AgentHub.jsx循环依赖问题
+- 修复index.html缺失问题
+- 修复Icon组件导入路径
+- 修复Tab组件（RunTab、ConfigTab、ProjectsTab、ApiTab、ToolsTab）导入路径
+- 修复lucide-react缺少Stop图标问题
 
-### Fixed
-- DiffView/HashBadge 组件缺少闭合括号
-- templates.js 重复导出 loadTemplates
-- ExecutionHistory 导入路径错误
-- agentTemplates.js 导入路径错误
+#### 验证结果
+- 单元测试: 211/211 通过
+- UI验证: 6/6 通过
+- 构建验证: 通过
 
 ---
 
-## [0.3.0] - 2026-03-31
+## v1.3.0 (2026-05-30)
 
-### Added
-- 键盘快捷键系统 (Ctrl+Enter 启动, Escape 停止, Ctrl+1-4 切换标签, Ctrl+/ 帮助)
-- 暗色/亮色主题切换，自动持久化
-- 日志面板虚拟滚动，支持大量日志高性能渲染
-- Loading 骨架屏组件
-- ConfigPanel 搜索过滤功能
-- Agent 悬停显示 Tooltip (系统提示词预览)
-- Pipeline 悬停高亮 + 上浮动画
-- 集成测试套件 (pipeline 执行流程)
+### 新增功能
 
-### Changed
-- 重构为模块化架构 (src/components, hooks, services, utils, constants)
-- API 层抽象支持多提供商 (Anthropic/OpenAI)
-- 存储层适配 (window.storage → localStorage 回退)
-- React.memo 优化核心组件渲染
+#### Agent多维评述系统
+- 实现五层评述框架（Tool→Skill→Behavior→Capability→Specialization）
+- 支持Agent专业化指数计算
+- 支持Agent画像可视化
+- 支持Agent对比分析
 
-### Fixed
-- templates.js 拼写错误 (SORAGE_TEMPLATES → STORAGE_TEMPLATES)
-- 依赖关系初始化逻辑
+#### Tool层采集
+- 扫描Agent配置中的工具引用
+- 查询toolRegistry获取工具详情
+- 统计工具分类和来源
+
+#### Skill层采集
+- 解析Agent的Skill配置
+- 分析系统提示词中的领域知识
+- 识别工作流模式
+- 评估Skill深度
+
+#### Behavior层分析
+- 统计工具调用频率
+- 识别调用顺序模式
+- 发现工具组合模式
+- 生成行为指纹
+
+#### Capability层推断
+- 基于Tool+Skill+Behavior推断能力边界
+- 识别能力覆盖和深度
+- 识别能力缺口
+
+#### Specialization层评估
+- 计算专业化指数（赫芬达尔指数）
+- 识别TOP 3擅长领域
+- 发现独特能力
+
+#### 流式输出优化
+- 实现SSE解析器
+- 支持增量Markdown渲染
+- 自动滚动控制
+
+#### Tracing系统
+- 实现结构化追踪
+- 支持Span嵌套
+- 可视化调用链路
+
+### 创建的文件
+
+```
+src/services/profiler/
+├── types.js
+├── AgentProfiler.js
+└── layers/
+    ├── ToolLayerCollector.js
+    ├── SkillLayerCollector.js
+    ├── BehaviorAnalyzer.js
+    ├── CapabilityInferrer.js
+    └── SpecializationScorer.js
+
+src/services/profiler/fingerprint/
+└── BehaviorFingerprint.js
+
+src/services/tracing/
+└── TracingService.js
+
+src/components/AgentProfile/
+├── AgentProfilePanel.jsx
+├── BehaviorView.jsx
+├── CapabilityMap.jsx
+└── SpecializationView.jsx
+
+src/components/TracingPanel/
+└── TracingPanel.jsx
+
+src/components/OutputPreview/
+└── StreamOutput.jsx
+
+src/hooks/
+├── useToolLayer.js
+├── useSkillLayer.js
+├── useStreamRender.js
+└── useTracing.js
+
+src/utils/
+└── sseParser.js
+```
 
 ---
 
-## [0.2.0] - 2026-03-31
+## v1.2.0 (2026-05-30)
 
-### Added
-- DAG 可配置流水线 (可视化依赖配置)
-- 并行执行无依赖 Agent
-- 任务模板系统 (预设 + 自定义)
-- 配置导入/导出 (JSON 格式)
-- 执行历史记录 (自动记录 + 搜索)
-- API 配置面板 (多模型切换、连接测试)
-- 错误处理与重试 (指数退避)
-- 真实 SSE 流式输出支持
-- 停止运行按钮
+### 新增功能
 
-### Changed
-- 拆分单文件为模块化结构
-- 多状态管理提取为自定义 hooks
-- 流水线支持 DAG 调度
+#### Webhook消息发送
+- 支持飞书、钉钉、企业微信三个平台
+- 消息中包含项目名称标识
+- 支持签名验证（飞书、钉钉）
+- 支持测试连接功能
+
+#### .agent压缩格式
+- 支持打包agent项目为.agent文件
+- 支持解压.agent文件并加载
+- 支持基本的完整性验证
+- 支持拖拽导入和导出
+
+### 创建的文件
+
+```
+src/services/webhook/
+├── WebhookService.js
+├── platforms/
+│   ├── feishu.js
+│   ├── dingtalk.js
+│   ├── wecom.js
+│   └── index.js
+└── index.js
+
+src/services/agentFormat/
+├── manifest.js
+├── packer.js
+├── unpacker.js
+├── verifier.js
+└── index.js
+
+src/components/
+├── WebhookConfig.jsx
+├── AgentImport.jsx
+├── AgentExport.jsx
+└── AgentFormatUI.jsx
+
+src/store/
+└── useWebhookStore.js
+```
 
 ---
 
-## [0.1.0] - 2026-03-30
+## v1.1.0 (2026-05-30)
 
-### Added
-- 初始版本
-- 多 Agent 顺序流水线执行
-- Git 式版本控制 (Commit/Diff/Revert)
-- Agent 身份哈希系统 (SHA-256)
-- 流式日志输出
-- 本地持久化
-- 4 个预设 Agent (规划师/研究员/执行者/审查员)
+### 代码质量提升
+
+#### AgentHub组件拆分
+- 将450行的主组件拆分为8个职责单一的子组件
+- AgentHubHeader - 头部导航
+- AgentHubModals - 模态框管理
+- RunTab/ConfigTab/ProjectsTab/ApiTab/ToolsTab - 各标签页
+
+#### 状态管理统一
+- 消除useStore.js和hooks/index.js的重复逻辑
+- 创建useAgentStore.js和usePipelineStore.js
+- 使用zustand persist中间件
+
+#### Provider适配器抽象
+- 消除api.js中的switch-case重复
+- 创建ProviderAdapter基类
+- 实现AnthropicAdapter、OpenAIAdapter、DeepSeekAdapter
+
+#### 测试覆盖提升
+- 核心业务逻辑测试覆盖率从20%提升到60%+
+- 添加store、providers、toolRegistry等测试
+
+### 创建的文件
+
+```
+src/components/AgentHub/
+├── index.jsx
+├── AgentHubHeader.jsx
+├── AgentHubModals.jsx
+└── tabs/
+    ├── RunTab.jsx
+    ├── ConfigTab.jsx
+    ├── ProjectsTab.jsx
+    ├── ApiTab.jsx
+    └── ToolsTab.jsx
+
+src/store/
+├── useAgentStore.js
+├── usePipelineStore.js
+└── index.js
+
+src/services/providers/
+├── ProviderAdapter.js
+├── AnthropicAdapter.js
+├── OpenAIAdapter.js
+├── DeepSeekAdapter.js
+└── index.js
+```
+
+---
+
+## v1.0.0 (2026-05-29)
+
+### 核心功能
+
+#### LLM Router
+- 支持13个Provider配置
+- 支持4种路由策略（成本优先、延迟优先、故障转移、手动选择）
+- 支持断路器机制
+- 支持Agent级LLM配置覆盖
+
+#### 前端图标系统
+- 集成Lucide React图标库
+- 为关键组件添加图标
+- 统一的Icon组件
+
+#### ToolUse Tag和沙箱
+- 工具注册表服务
+- 工具使用标签显示
+- 工具权限沙箱限制
+- 工具调用拦截器
+
+#### 外部项目转写
+- 支持10种外部格式
+- 转写规则引擎
+- 导入向导组件
+
+### 创建的文件
+
+```
+src/constants/providers.js
+src/services/circuitBreaker.js
+src/services/routingStrategy.js
+src/services/llmRouter.js
+src/components/Icon.jsx
+src/components/AgentLLMConfig.jsx
+src/services/toolRegistry.js
+src/services/toolCallInterceptor.js
+src/components/ToolUseTag.jsx
+src/components/AgentToolSandbox.jsx
+src/services/transcriptionRules.js
+src/services/transcriptionEngine.js
+src/components/ImportWizard.jsx
+src/components/TranscriptionPreview.jsx
+```
+
+---
+
+## 版本说明
+
+- **Major版本** (x.0.0): 重大功能更新
+- **Minor版本** (x.y.0): 新功能添加
+- **Patch版本** (x.y.z): Bug修复和小改进

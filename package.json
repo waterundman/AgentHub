@@ -1,6 +1,6 @@
 {
   "name": "agenthub",
-  "version": "0.4.0",
+  "version": "1.4.0",
   "description": "轻量多 Agent 协作平台 - Git 式版本管理 AI Agent",
   "type": "module",
   "main": "dist/main/main.cjs",
@@ -24,6 +24,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "dotenv": "^17.4.1",
+    "lucide-react": "^0.400.0",
     "monaco-editor": "^0.45.0",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
@@ -32,12 +33,14 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^1.6.1",
     "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "electron": "^41.1.1",
     "electron-builder": "^26.8.1",
     "esbuild": "^0.24.2",
     "esbuild-node-externals": "^1.21.0",
+    "jsdom": "^29.1.1",
     "vite": "^5.2.0",
     "vite-plugin-node-polyfills": "^0.26.0",
     "vitest": "^1.6.0",
@@ -69,7 +72,9 @@
       "target": [
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -77,13 +82,19 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "category": "public.app-category.productivity"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Development"
     },
     "nsis": {
